@@ -109,7 +109,7 @@ namespace AmazonPay
             if ("2".Equals(signatureVersion))
             {
                 String signatureMethod = "HmacSHA256";
-                algorithm = KeyedHashAlgorithm.Create(signatureMethod.ToUpper());
+                algorithm = HMAC.Create(signatureMethod.ToUpper());
                 parameters.Add("SignatureMethod", signatureMethod);
                 stringToSign = CalculateStringToSignV2(parameters);
             }
