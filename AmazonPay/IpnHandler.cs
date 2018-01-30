@@ -487,8 +487,8 @@ namespace AmazonPay
         /// <returns>true if successful</returns>
         private bool VerifyMsgMatchesSignatureWithPublicCert(byte[] data, byte[] signature)
         {
-            var cng = (RSACng)GetPublicKey();
-            return cng.VerifyData(data, signature, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+            var rsa = GetPublicKey();
+            return rsa.VerifyData(data, signature, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
             //return cng.VerifyData(data, CryptoConfig.MapNameToOID("SHA1"), signature);
         }
 
@@ -553,11 +553,10 @@ namespace AmazonPay
         /// Gets AsymmetricAlgorithm representing the certificate's public key
         /// </summary>
         /// <returns>x509Cert.PublicKey.Key value</returns>
-        private AsymmetricAlgorithm GetPublicKey()
+        private RSA GetPublicKey()
         {
-            return x509Cert.PublicKey.Key;
+            return x509Cert.GetRSAPublicKey();
         }
-
 
         /// <summary>
         /// Parse the Notification into API Response objects.

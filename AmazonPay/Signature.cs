@@ -100,16 +100,15 @@ namespace AmazonPay
         /// <returns>signature string</returns>
         private String SignParameters(IDictionary<String, String> parameters, String key)
         {
+            const string signatureMethod = "HmacSHA256";
             String signatureVersion = parameters["SignatureVersion"];
 
-            KeyedHashAlgorithm algorithm = new HMACSHA256();
-
             String stringToSign = null;
+            HMAC algorithm;
 
             if ("2".Equals(signatureVersion))
             {
-                const string signatureMethod = "HmacSHA256";
-                algorithm = new HMACSHA256();
+                algorithm = new HMACSHA256(Encoding.UTF8.GetBytes(key));
                 parameters.Add("SignatureMethod", signatureMethod);
                 stringToSign = CalculateStringToSignV2(parameters);
             }
@@ -118,7 +117,7 @@ namespace AmazonPay
                 throw new InvalidDataException("Invalid Signature Version specified");
             }
 
-            return Sign(stringToSign, key, algorithm);
+            return Sign(stringToSign, algorithm);
         }
 
         /// <summary>
@@ -181,13 +180,11 @@ namespace AmazonPay
         /// Computes RFC 2104-compliant HMAC signature.
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="key"></param>
         /// <param name="algorithm"></param>
         /// <returns>string signature</returns>
-        private String Sign(String data, String key, KeyedHashAlgorithm algorithm)
+        private String Sign(String data, HMAC algorithm)
         {
             Encoding encoding = new UTF8Encoding();
-            algorithm.Key = encoding.GetBytes(key);
             return Convert.ToBase64String(algorithm.ComputeHash(
                 encoding.GetBytes(data.ToCharArray())));
         }
