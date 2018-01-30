@@ -5,6 +5,18 @@
     <RootNamespace>AmazonPay</RootNamespace>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <PackageId>AmazonPay</PackageId>
+    <Authors>AmazonPay</Authors>
+    <PackageVersion>3.3.2</PackageVersion>
+    
+    <Title>AmazonPay</Title>
+    <PackageProjectUrl>https://github.com/SignalGroup/amazon-pay-sdk-csharp</PackageProjectUrl>
+    <PackageIconUrl>https://images-na.ssl-images-amazon.com/images/G/01/Iris3_US/en_US/inca/images/60x38-white-x1.png</PackageIconUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Description>AmazonPay service. This API section enables you to programmatically retrieve shipping and payment information provided by the buyer from their Amazon account. It allows you to authorize, capture, and refund payments, enabling a variety of payments scenarios.</Description>
+    <Copyright>Copyright 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.</Copyright>
+    <PackageReleaseNotes>v3.3.2</PackageReleaseNotes>
+    <PackageTags>AmazonPay</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
