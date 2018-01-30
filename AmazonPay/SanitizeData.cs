@@ -33,17 +33,11 @@ namespace AmazonPay
         {
             string returnString = string.Empty;
             const string REMOVED_TEXT = "*REMOVED*";
+            const string sanitizeListString = "RequestID;Error;SellerId;SignatureMethod;CaptureNow";
             List<string> sanitizeList = new List<string>();
 
-            if (string.IsNullOrEmpty(ConfigurationManager.AppSettings["sanitizeList"]))
-                throw new ArgumentException("You have set Logger but we are missing sanitezeList property in configuration file. \n " +
-                                    "Please add:'  \n" +
-                                    "<appSettings> \n" +
-                                    "<add key=\"sanitizeList\" value=\"Example1;Example2;Example3\"/> \n" +
-                                    "</appSettings>");
-
             // Load list of sanitized tags in to array
-            string[] listArray = ConfigurationManager.AppSettings["sanitizeList"].Split(new char[] { ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] listArray = sanitizeListString.Split(new char[] { ';', ' ' }, StringSplitOptions.RemoveEmptyEntries);
             // Load SanitizeDataList
             foreach (var item in listArray)
             {

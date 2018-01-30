@@ -102,14 +102,14 @@ namespace AmazonPay
         {
             String signatureVersion = parameters["SignatureVersion"];
 
-            KeyedHashAlgorithm algorithm = new HMACSHA1();
+            KeyedHashAlgorithm algorithm = new HMACSHA256();
 
             String stringToSign = null;
 
             if ("2".Equals(signatureVersion))
             {
-                String signatureMethod = "HmacSHA256";
-                algorithm = HMAC.Create(signatureMethod.ToUpper());
+                const string signatureMethod = "HmacSHA256";
+                algorithm = new HMACSHA256();
                 parameters.Add("SignatureMethod", signatureMethod);
                 stringToSign = CalculateStringToSignV2(parameters);
             }

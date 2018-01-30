@@ -385,7 +385,6 @@ namespace AmazonPay
                 {Constants.Action,requestParameters.GetAction()},
                 {Constants.SellerId,requestParameters.GetMerchantId()},
                 {Constants.AmazonOrderReferenceId,requestParameters.GetAmazonOrderReferenceId()},
-                {Constants.AddressConsentToken, requestParameters.GetAddressConsentToken()},
                 {Constants.AccessToken, requestParameters.GetAccessToken()},
                 {Constants.MWSAuthToken,requestParameters.GetMWSAuthToken()},
             };
@@ -994,7 +993,6 @@ namespace AmazonPay
                 {Constants.Action,requestParameters.GetAction()},
                 {Constants.SellerId,requestParameters.GetMerchantId()},
                 {Constants.AmazonBillingAgreementId,requestParameters.GetAmazonBillingAgreementId()},
-                {Constants.AddressConsentToken,requestParameters.GetAddressConsentToken()},
                 {Constants.MWSAuthToken,requestParameters.GetMWSAuthToken()}
             };
             string response = SetParametersAndPost(getBillingAgreementDetailsDictionary);

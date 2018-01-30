@@ -1,21 +1,17 @@
-﻿using System;
+﻿using AmazonPay.Responses;
+using Common.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.Text;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using System.Net;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Net;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using AmazonPay;
-using System.Xml;
-using AmazonPay.Responses;
+using System.Text;
 using System.Text.RegularExpressions;
-using Common.Logging;
+using System.Xml;
 
 namespace AmazonPay
 {
@@ -96,9 +92,9 @@ namespace AmazonPay
                     GetIpnResponseObjects();
                 }
             }
-            catch (HttpParseException ex)
+            catch (Exception ex)
             {
-                throw new HttpParseException("Error Parsing the IPN notification", ex);
+                throw new Exception("Error Parsing the IPN notification", ex);
             }
 
         }
@@ -491,43 +487,44 @@ namespace AmazonPay
         /// <returns>true if successful</returns>
         private bool VerifyMsgMatchesSignatureWithPublicCert(byte[] data, byte[] signature)
         {
-            RSACryptoServiceProvider csp = (RSACryptoServiceProvider)GetPublicKey();
-            return csp.VerifyData(data, CryptoConfig.MapNameToOID("SHA1"), signature);
+            var cng = (RSACng)GetPublicKey();
+            return cng.VerifyData(data, signature, HashAlgorithmName.SHA1, RSASignaturePadding.Pkcs1);
+            //return cng.VerifyData(data, CryptoConfig.MapNameToOID("SHA1"), signature);
         }
 
-        /// <summary>
-        ///  Check the application cache for the certificate, and use this if still valid
-        ///  If not found, request the cert and add to the cache with a timeout of 24 hours
-        /// </summary>
-        /// <param name="certPath"></param>
-        /// <returns>Instance of the x508 certificate</returns>
-        private X509Certificate2 GetCertificate(string certPath)
-        {
-            X509Certificate2 cert = null;
-            try
-            {
-                cert = (X509Certificate2)HttpRuntime.Cache.Get(String.Format(Constants.CacheKey, certPath));
-            }
-            catch (HttpException ex)
-            {
-                throw new HttpException("Error requesting certificate", ex);
-            }
+        ///// <summary>
+        /////  Check the application cache for the certificate, and use this if still valid
+        /////  If not found, request the cert and add to the cache with a timeout of 24 hours
+        ///// </summary>
+        ///// <param name="certPath"></param>
+        ///// <returns>Instance of the x508 certificate</returns>
+        //private X509Certificate2 GetCertificate(string certPath)
+        //{
+        //    X509Certificate2 cert = null;
+        //    try
+        //    {
+        //        cert = (X509Certificate2)HttpRuntime.Cache.Get(String.Format(Constants.CacheKey, certPath));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception("Error requesting certificate", ex);
+        //    }
 
-            if (cert == null)
-            {
-                cert = GetCertificateFromURI(certPath);
-                HttpRuntime.Cache.Insert(String.Format(Constants.CacheKey, certPath), cert, null, DateTime.UtcNow.AddDays(1.0), System.Web.Caching.Cache.NoSlidingExpiration);
-            }
+        //    if (cert == null)
+        //    {
+        //        cert = GetCertificateFromURI(certPath);
+        //        HttpRuntime.Cache.Insert(String.Format(Constants.CacheKey, certPath), cert, null, DateTime.UtcNow.AddDays(1.0), System.Web.Caching.Cache.NoSlidingExpiration);
+        //    }
 
-            return cert;
-        }
+        //    return cert;
+        //}
 
         /// <summary>
         /// Request the certifcate from the given URI
         /// </summary>
         /// <param name="certPath"></param>
         /// <returns>Instance of the x508 certificate</returns>
-        private X509Certificate2 GetCertificateFromURI(string certPath)
+        private X509Certificate2 GetCertificate(string certPath)
         {
             WebClient wc = new WebClient();
             byte[] raw = wc.DownloadData(certPath);
